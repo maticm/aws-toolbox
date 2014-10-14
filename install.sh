@@ -60,7 +60,7 @@ UNZIP="unzip -q"
 $UNZIP ec2-api-tools.zip
 $UNZIP ec2-ami-tools.zip
 $UNZIP CloudWatch-2010-08-01.zip
-$UNZIP AutoScaling-2010-08-01.zip
+$UNZIP AutoScaling-2011-01-01.zip
 $UNZIP ElasticLoadBalancing.zip
 $UNZIP RDSCli.zip
 $UNZIP elastic-mapreduce-ruby.zip -d elastic-mapreduce-ruby # tarbomb

@@ -3,17 +3,17 @@
 # AWS Toolbox installer
 #
 # Copyright (c) 2011 Jaka Jancar <jaka@kubje.org>
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-set -eu -o pipefail
+set -eux -o pipefail
 
 fail() {
     echo "$(basename $0): error: $1" >&2
@@ -47,7 +47,7 @@ DOWNLOAD="curl --silent --show-error --fail --remote-name"
 $DOWNLOAD http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
 $DOWNLOAD http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
 $DOWNLOAD http://s3.amazonaws.com/ec2-downloads/CloudWatch-2010-08-01.zip  # URL for latest not available
-$DOWNLOAD http://s3.amazonaws.com/ec2-downloads/AutoScaling-2011-01-01.zip 
+$DOWNLOAD http://s3.amazonaws.com/ec2-downloads/AutoScaling-2011-01-01.zip
 $DOWNLOAD http://s3.amazonaws.com/ec2-downloads/ElasticLoadBalancing.zip
 $DOWNLOAD http://s3.amazonaws.com/rds-downloads/RDSCli.zip
 $DOWNLOAD http://s3.amazonaws.com/elasticmapreduce/elastic-mapreduce-ruby.zip
@@ -64,7 +64,7 @@ $UNZIP AutoScaling-2011-01-01.zip
 $UNZIP ElasticLoadBalancing.zip
 $UNZIP RDSCli.zip
 $UNZIP elastic-mapreduce-ruby.zip -d elastic-mapreduce-ruby # tarbomb
-$UNZIP elasticbeanstalk-cli.zip elasticbeanstalk-cli/* # tarbomb, extract only tools
+$UNZIP elasticbeanstalk-cli.zip
 $UNZIP IAMCli.zip
 $UNZIP AWSCloudFormation-cli.zip
 rm *.zip
@@ -80,7 +80,7 @@ do
 done
 
 # chmod 755 elasticbeanstalk since it's distributed 644
-for CMD in elasticbeanstalk-cli/bin/*
+for CMD in AWS-ElasticBeanstalk-CLI/api/bin/*
 do
     if ! [[ $CMD =~ "service" ]] && ! [[ $CMD =~ ".cmd" ]]
     then
@@ -98,17 +98,17 @@ read -d '' LAUNCHER <<'EOFF' || true
 # AWS Toolbox launcher
 #
 # Copyright (c) 2011 Jaka Jancar <jaka@kubje.org>
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -176,7 +176,7 @@ EOF
                 echo -n "Testing $1... "
                 $2 >/dev/null && echo ok || echo failed
             }
-        
+
             check "EC2 API tools"               "ec2-describe-instances"
             check "EC2 AMI tools"               "ec2-upload-bundle --help"
             check "CloudWatch tools"            "mon-describe-alarms"
@@ -214,7 +214,7 @@ then
         cfn-describe-stacks)    PARAMS="--access-key-id $AWS_ACCESS_KEY --secret-key $AWS_SECRET_KEY                                                                      " ;;
         *)                      PARAMS="" ;;
     esac
-    
+
     EC2_HOME=$AWS_HOME/pkgs/ec2-ami-tools \
     $AWS_HOME/pkgs/ec2-ami-tools/bin/$CMD $PARAMS "$@"
 elif [ -e "$AWS_HOME/pkgs/CloudWatch/bin/$CMD" ]
@@ -247,9 +247,9 @@ then
     "region": "$AWS_REGION"
 }
 EOF
-    
+
     $AWS_HOME/pkgs/elastic-mapreduce-ruby/elastic-mapreduce -c $EMR_CONFIG "$@"
-    
+
     # Remove temporary config file
     rm $EMR_CONFIG
 elif [ -e "$AWS_HOME/pkgs/elasticbeanstalk-cli/bin/$CMD" ]

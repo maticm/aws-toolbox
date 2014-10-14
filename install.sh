@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-set -eux -o pipefail
+set -eu -o pipefail
 
 fail() {
     echo "$(basename $0): error: $1" >&2
